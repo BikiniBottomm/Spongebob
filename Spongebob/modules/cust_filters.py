@@ -292,10 +292,23 @@ def reply_filter(update, context):
                     "chatname",
                     "mention",
                 ]
-                if filt.reply_text:
-                    valid_format = escape_invalid_curly_brackets(
-                        filt.reply_text, VALID_WELCOME_FORMATTERS
-                    )
+               if filt.reply_text:
+                    if "%%%" in filt.reply_text:
+                        split = filt.reply_text.split("%%%")
+                        if all(split):
+                            text = random.choice(split)
+                        else:
+                            text = filt.reply_text
+                    else:
+                        text = filt.reply_text
+                    if text.startswith("~!") and text.endswith("!~"):
+                        sticker_id = text.replace("~!", "").replace("!~", "")
+                        try:
+                            context.bot.send_sticker(
+                                chat.id,
+                                sticker_id,
+                                reply_to_message_id=message.message_id,
+                            )
                     if valid_format:
                         filtext = valid_format.format(
                             first=escape(message.from_user.first_name),
