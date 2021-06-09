@@ -4,6 +4,7 @@ from Spongebob import dispatcher
 from Spongebob.modules.disable import (DisableAbleCommandHandler,
                                           DisableAbleMessageHandler)
 from Spongebob.modules.sql import afk_sql as sql
+FROM Spongebob.modules.sql import end_afk_time
 from Spongebob.modules.users import get_user_id
 from telegram import MessageEntity, Update
 from telegram.error import BadRequest
@@ -43,27 +44,25 @@ def afk(update: Update, context: CallbackContext):
 
 
 @run_async
-def no_longer_afk(update: Update, context: CallbackContext):
+def no_longer_afk(update, context):
     user = update.effective_user
     message = update.effective_message
-
     if not user:  # ignore channels
         return
 
-    res = sql.rm_afk(user.id)
+    if not is_user_afk(user.id):  #Check if user is afk or not
+        return
+    end_afk_time = get_readable_time((time.time() - float(sql.get(f'afk_time_{user.id}'))))
+    sql.delete(f'afk_time_{user.id}')
+    res = end_afk(user.id)
     if res:
         if message.new_chat_members:  #dont say msg
             return
         firstname = update.effective_user.first_name
         try:
-            options = [
-                '{} is here!', '{} is back!', '{} is now in the chat!',
-                '{} is awake!', '{} is back online!', '{} is finally here!',
-                'Welcome back! {} here you krabby!', 'Where is {}?\nIn the chat!'
-            ]
-            chosen_option = random.choice(options)
-            update.effective_message.reply_text(chosen_option.format(firstname))
-        except:
+            message.reply_text(
+                "<b>{}</b> is now Here!\nYou were Away for : <code>{}</code>".format(firstname, end_afk_time), parse_mode="html")
+        except Exception:
             return
 
 
