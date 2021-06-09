@@ -48,7 +48,7 @@ def no_longer_afk(update, context):
     if not user:  # ignore channels
         return
 
-    if not is_user_afk(user.id):  #Check if user is afk or not
+    if not is_afk(user.id):  #Check if user is afk or not
         return
     end_afk_time = get_readable_time((time.time() - float(sql.get(f'afk_time_{user.id}'))))
     sql.delete(f'afk_time_{user.id}')
