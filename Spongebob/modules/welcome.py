@@ -428,7 +428,7 @@ def check_not_bot(member, chat_id, message_id, context):
 
         try:
             bot.edit_message_text(
-                "*kicks user*\nThey can always rejoin and try.",
+                "`Failed!` they can join again and try again.",
                 chat_id=chat_id,
                 message_id=message_id,
             )
