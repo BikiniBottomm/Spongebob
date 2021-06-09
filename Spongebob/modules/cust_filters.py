@@ -1,5 +1,6 @@
 import re
 from html import escape
+import random
 
 import telegram
 from telegram import ParseMode, InlineKeyboardMarkup, Message, Chat
