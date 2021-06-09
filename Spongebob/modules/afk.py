@@ -6,6 +6,7 @@ from Spongebob.modules.disable import (DisableAbleCommandHandler,
                                           DisableAbleMessageHandler)
 from Spongebob.modules.sql import afk_sql as sql
 from Spongebob.modules.users import get_user_id
+from Spongebob import DB_URI
 from Spongebob.modules.helper_funcs.readable_time import get_readable_time
 from telegram import MessageEntity, Update
 from telegram.error import BadRequest
@@ -54,7 +55,7 @@ def no_longer_afk(update: Update, context: CallbackContext):
     if res:
         if message.new_chat_members:  #dont say msg
             return
-        end_afk_time = get_readable_time((time.time() - float(REDIS.get(f'rm_afk{user.id}'))))
+        end_afk_time = get_readable_time((time.time() - float(DB_URI.get(f'rm_afk{user.id}'))))
         firstname = update.effective_user.first_name
         try:
            message.reply_text(
