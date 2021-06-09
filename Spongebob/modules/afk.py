@@ -4,7 +4,7 @@ from Spongebob import dispatcher
 from Spongebob.modules.disable import (DisableAbleCommandHandler,
                                           DisableAbleMessageHandler)
 from Spongebob.modules.sql import afk_sql as sql
-from Spongebob.modules.sql.afk_sql import end_afk_time
+from Spongebob.modules.sql.afk_sql import end_afk
 from Spongebob.modules.users import get_user_id
 from telegram import MessageEntity, Update
 from telegram.error import BadRequest
