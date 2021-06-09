@@ -55,11 +55,15 @@ def no_longer_afk(update: Update, context: CallbackContext):
     if res:
         if message.new_chat_members:  #dont say msg
             return
-        end_afk_time = get_readable_time((time.time() - res
         firstname = update.effective_user.first_name
         try:
-           message.reply_text(
-               "<b>{}</b> is now Up!\nYou were Away for : <code>{}</code>".format(firstname, end_afk_time), parse_mode="html")
+            options = [
+                '{} is here!', '{} is back!', '{} is now in the chat!',
+                '{} is awake!', '{} is back online!', '{} is finally here!',
+                'Welcome back! {} here you krabby!', 'Where is {}?\nIn the chat!'
+            ]
+            chosen_option = random.choice(options)
+            update.effective_message.reply_text(chosen_option.format(firstname))
         except:
             return
 
