@@ -14,7 +14,6 @@ AFK_GROUP = 7
 AFK_REPLY_GROUP = 8
 
 
-@run_async
 def afk(update: Update, context: CallbackContext):
     args = update.effective_message.text.split(None, 1)
     user = update.effective_user
@@ -43,7 +42,6 @@ def afk(update: Update, context: CallbackContext):
         pass
 
 
-@run_async
 def no_longer_afk(update, context):
     user = update.effective_user
     message = update.effective_message
@@ -66,7 +64,6 @@ def no_longer_afk(update, context):
             return
 
 
-@run_async
 def reply_afk(update: Update, context: CallbackContext):
     bot = context.bot
     message = update.effective_message
