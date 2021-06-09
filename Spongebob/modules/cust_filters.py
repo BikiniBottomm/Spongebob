@@ -298,65 +298,55 @@ def reply_filter(update, context):
                     "mention",
                 ]
                 if filt.reply_text:
-                    if "%%%" in filt.reply_text:
-                        split = filt.reply_text.split("%%%")
+                    if '%%%' in filt.reply_text:
+                        split = filt.reply_text.split('%%%')
                         if all(split):
                             text = random.choice(split)
                         else:
                             text = filt.reply_text
                     else:
                         text = filt.reply_text
-                    if text.startswith("~!") and text.endswith("!~"):
-                        sticker_id = text.replace("~!", "").replace("!~", "")
+                    if text.startswith('~!') and text.endswith('!~'):
+                        sticker_id = text.replace('~!', '').replace('!~', '')
                         try:
                             context.bot.send_sticker(
                                 chat.id,
                                 sticker_id,
-                                reply_to_message_id=message.message_id,
-                            )
+                                reply_to_message_id=message.message_id)
                             return
                         except BadRequest as excp:
-                            if (
-                                excp.message
-                                == "Wrong remote file identifier specified: wrong padding in the string"
-                            ):
+                            if excp.message == 'Wrong remote file identifier specified: wrong padding in the string':
                                 context.bot.send_message(
                                     chat.id,
-                                    "Message couldn't be sent, Is the sticker id valid?",
+                                    "Message couldn't be sent, Is the sticker id valid?"
                                 )
                                 return
                             else:
-                                LOGGER.exception("Error in filters: " + excp.message)
+                                LOGGER.exception("Error in filters: " +
+                                                 excp.message)
                                 return
                     valid_format = escape_invalid_curly_brackets(
-                        text, VALID_WELCOME_FORMATTERS,
-                    )
+                        text, VALID_WELCOME_FORMATTERS)
                     if valid_format:
                         filtext = valid_format.format(
                             first=escape(message.from_user.first_name),
-                            last=escape(
-                                message.from_user.last_name
-                                or message.from_user.first_name,
-                            ),
+                            last=escape(message.from_user.last_name or
+                                        message.from_user.first_name),
                             fullname=" ".join(
                                 [
                                     escape(message.from_user.first_name),
                                     escape(message.from_user.last_name),
-                                ]
-                                if message.from_user.last_name
-                                else [escape(message.from_user.first_name)],
-                            ),
+                                ] if message.from_user.last_name else
+                                [escape(message.from_user.first_name)]),
                             username="@" + escape(message.from_user.username)
-                            if message.from_user.username
-                            else mention_html(
-                                message.from_user.id, message.from_user.first_name,
-                            ),
-                            mention=mention_html(
-                                message.from_user.id, message.from_user.first_name,
-                            ),
+                            if message.from_user.username else mention_html(
+                                message.from_user.id,
+                                message.from_user.first_name),
+                            mention=mention_html(message.from_user.id,
+                                                 message.from_user.first_name),
                             chatname=escape(message.chat.title)
-                            if message.chat.type != "private"
-                            else escape(message.from_user.first_name),
+                            if message.chat.type != "private" else escape(
+                                message.from_user.first_name),
                             id=message.from_user.id,
                         )
                     else:
@@ -369,33 +359,54 @@ def reply_filter(update, context):
                         context.bot.send_message(
                             chat.id,
                             markdown_to_html(filtext),
-                            parse_mode=ParseMode.HTML,
                             reply_to_message_id=message.message_id,
+                            parse_mode=ParseMode.HTML,
                             disable_web_page_preview=True,
-                            reply_markup=keyboard
+                            reply_markup=keyboard,
                         )
                     except BadRequest as excp:
-                        LOGGER.exception("Error in filters: " + excp.message)
-                        try:
-                            send_message(
-                                update.effective_message,
-                                get_exception(excp, filt, chat),
-                            )
-                        except BadRequest as excp:
-                            LOGGER.exception(
-                                "Failed to send message: " + excp.message,
-                            )
+                        error_catch = get_exception(excp, filt, chat)
+                        if error_catch == "noreply":
+                            try:
+                                context.bot.send_message(
+                                    chat.id,
+                                    markdown_to_html(filtext),
+                                    parse_mode=ParseMode.HTML,
+                                    disable_web_page_preview=True,
+                                    reply_markup=keyboard,
+                                )
+                            except BadRequest as excp:
+                                LOGGER.exception("Error in filters: " +
+                                                 excp.message)
+                                send_message(
+                                    update.effective_message,
+                                    get_exception(excp, filt, chat),
+                                )
+                        else:
+                            try:
+                                send_message(
+                                    update.effective_message,
+                                    get_exception(excp, filt, chat),
+                                )
+                            except BadRequest as excp:
+                                LOGGER.exception("Failed to send message: " +
+                                                 excp.message)
+                                pass
                 else:
                     try:
                         ENUM_FUNC_MAP[filt.file_type](
                             chat.id,
                             filt.file_id,
+                            caption=markdown_to_html(filtext),
+                            reply_to_message_id=message.message_id,
+                            parse_mode=ParseMode.HTML,
+                            disable_web_page_preview=True,
                             reply_markup=keyboard,
                         )
                     except BadRequest:
                         send_message(
                             message,
-                            "I don't have the permission to send the content of the filter.",
+                            "I don't have the permission to send the content of the filter."
                         )
                 break
             else:
@@ -417,8 +428,8 @@ def reply_filter(update, context):
                     keyboard = InlineKeyboardMarkup(keyb)
 
                     try:
-                        context.bot.send_message(
-                            chat.id,
+                        send_message(
+                            update.effective_message,
                             filt.reply,
                             parse_mode=ParseMode.MARKDOWN,
                             disable_web_page_preview=True,
@@ -434,7 +445,22 @@ def reply_filter(update, context):
                                     "again...",
                                 )
                             except BadRequest as excp:
-                                LOGGER.exception("Error in filters: " + excp.message)
+                                LOGGER.exception("Error in filters: " +
+                                                 excp.message)
+                                pass
+                        elif excp.message == "Reply message not found":
+                            try:
+                                context.bot.send_message(
+                                    chat.id,
+                                    filt.reply,
+                                    parse_mode=ParseMode.MARKDOWN,
+                                    disable_web_page_preview=True,
+                                    reply_markup=keyboard,
+                                )
+                            except BadRequest as excp:
+                                LOGGER.exception("Error in filters: " +
+                                                 excp.message)
+                                pass
                         else:
                             try:
                                 send_message(
@@ -442,10 +468,11 @@ def reply_filter(update, context):
                                     "This message couldn't be sent as it's incorrectly formatted.",
                                 )
                             except BadRequest as excp:
-                                LOGGER.exception("Error in filters: " + excp.message)
-                            LOGGER.warning(
-                                "Message %s could not be parsed", str(filt.reply),
-                            )
+                                LOGGER.exception("Error in filters: " +
+                                                 excp.message)
+                                pass
+                            LOGGER.warning("Message %s could not be parsed",
+                                           str(filt.reply))
                             LOGGER.exception(
                                 "Could not parse filter %s in chat %s",
                                 str(filt.keyword),
@@ -455,9 +482,10 @@ def reply_filter(update, context):
                 else:
                     # LEGACY - all new filters will have has_markdown set to True.
                     try:
-                        context.bot.send_message(chat.id, filt.reply)
+                        send_message(update.effective_message, filt.reply)
                     except BadRequest as excp:
                         LOGGER.exception("Error in filters: " + excp.message)
+                        pass
                 break
 
 @user_admin
