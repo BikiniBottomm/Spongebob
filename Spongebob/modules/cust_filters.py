@@ -292,7 +292,7 @@ def reply_filter(update, context):
                     "chatname",
                     "mention",
                 ]
-               if filt.reply_text:
+                if filt.reply_text:
                     if "%%%" in filt.reply_text:
                         split = filt.reply_text.split("%%%")
                         if all(split):
