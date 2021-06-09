@@ -309,7 +309,7 @@ def reply_filter(update, context):
                                 sticker_id,
                                 reply_to_message_id=message.message_id,
                             )
-                  if valid_format:
+                    if valid_format:
                         filtext = valid_format.format(
                             first=escape(message.from_user.first_name),
                             last=escape(
