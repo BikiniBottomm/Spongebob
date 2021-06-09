@@ -5,7 +5,6 @@ from Spongebob import dispatcher
 from Spongebob.modules.disable import (DisableAbleCommandHandler,
                                           DisableAbleMessageHandler)
 from Spongebob.modules.sql import afk_sql as sql
-from Spongebob.modules.sql.afk_sql import end_afk, is_afk
 from Spongebob.modules.users import get_user_id
 from Spongebob.modules.helper_funcs.readable_time import get_readable_time
 from telegram import MessageEntity, Update
@@ -44,25 +43,23 @@ def afk(update: Update, context: CallbackContext):
         pass
 
 
-def no_longer_afk(update, context):
+def no_longer_afk(update: Update, context: CallbackContext):
     user = update.effective_user
     message = update.effective_message
+
     if not user:  # ignore channels
         return
 
-    if not is_afk(user.id):  #Check if user is afk or not
-        return
-    end_afk_time = get_readable_time((time.time() - float(sql.get(f'afk_time_{user.id}'))))
-    sql.delete(f'afk_time_{user.id}')
-    res = end_afk(user.id)
+    res = sql.rm_afk(user.id)
     if res:
         if message.new_chat_members:  #dont say msg
             return
+        end_afk_time = get_readable_time((time.time() - float(REDIS.get(f'rm_afk{user.id}'))))
         firstname = update.effective_user.first_name
         try:
-            message.reply_text(
-                "<b>{}</b> is now Here!\nYou were Away for : <code>{}</code>".format(firstname, end_afk_time), parse_mode="html")
-        except Exception:
+           message.reply_text(
+               "<b>{}</b> is now Up!\nYou were Away for : <code>{}</code>".format(firstname, end_afk_time), parse_mode="html")
+        except:
             return
 
 
