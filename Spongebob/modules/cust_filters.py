@@ -11,7 +11,7 @@ from telegram.utils.helpers import escape_markdown, mention_markdown, mention_ht
 from Spongebob import LOGGER, dispatcher
 from Spongebob.modules.connection import connected
 from Spongebob.modules.disable import DisableAbleCommandHandler
-from SaitamaRobot.modules.helper_funcs.handlers import MessageHandlerChecker
+from Spongebob.modules.helper_funcs.handlers import MessageHandlerChecker
 from Spongebob.modules.helper_funcs.alternate import send_message, typing_action
 from Spongebob.modules.helper_funcs.chat_status import user_admin
 from Spongebob.modules.helper_funcs.extraction import extract_text
