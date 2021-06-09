@@ -39,7 +39,7 @@ Spongebob is a simple Krabby Patty solution to your group management needs and h
 * Support Group : <a  href="https://t.me/VohaChat" alt="Voha Chat"> <img  src="https://img.shields.io/badge/%F0%9F%92%A1-Voha%20Chat-9cf" /> </a>
 
 
-Should you be forking this repo then do not forget to star it! - <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/Voha/spongebob?color=white&label=%F0%9F%8C%9F%20star">
+Should you be forking this repo then do not forget to star it! - <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/Xlaaf/spongebob?color=white&label=%F0%9F%8C%9F%20star">
 
 <details>
   <summary>Steps to deploy on Heroku </summary>
