@@ -55,7 +55,7 @@ def no_longer_afk(update: Update, context: CallbackContext):
     if res:
         if message.new_chat_members:  #dont say msg
             return
-        end_afk_time = get_readable_time((time.time() - float(sql.rm_afk{user.id}'))
+        end_afk_time = get_readable_time((time.time() - res
         firstname = update.effective_user.first_name
         try:
            message.reply_text(
