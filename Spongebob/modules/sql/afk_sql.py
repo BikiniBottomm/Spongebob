@@ -29,6 +29,10 @@ AFK_USERS = {}
 def is_afk(user_id):
     return user_id in AFK_USERS
 
+def end_afk(userid):
+    SESSION.delete(f'is_afk_{userid}')
+    return True
+
 
 def check_afk_status(user_id):
     try:
