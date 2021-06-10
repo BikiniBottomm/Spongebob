@@ -88,9 +88,6 @@ __help__ = """
  • `/reverse <pic>`*:* Reply to a pic to get source of a pic
 *Wikipedia:*
  • `/wiki <query>`*:* wikipedia your query
-*Time:*
- • `/time <query>`*:* search time with your query
-
 """
 
 ECHO_HANDLER = DisableAbleCommandHandler("echo", echo, filters=Filters.group)
