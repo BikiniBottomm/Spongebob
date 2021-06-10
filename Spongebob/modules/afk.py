@@ -6,7 +6,6 @@ from Spongebob.modules.disable import (DisableAbleCommandHandler,
                                           DisableAbleMessageHandler)
 from Spongebob.modules.sql import afk_sql as sql
 from Spongebob.modules.users import get_user_id
-from Spongebob import DB_URI
 from Spongebob.modules.helper_funcs.readable_time import get_readable_time
 from telegram import MessageEntity, Update
 from telegram.error import BadRequest
