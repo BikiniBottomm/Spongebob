@@ -855,6 +855,17 @@ def welcomemute(update: Update, context: CallbackContext) -> str:
                 f"#WELCOME_MUTE\n"
                 f"<b>• Admin:</b> {mention_html(user.id, user.first_name)}\n"
                 f"Has toggled welcome mute to <b>STRONG</b>.")
+        elif args[0].lower() in ["captcha"]:
+            sql.set_welcome_mutes(chat.id, "captcha")
+            msg.reply_text(
+                "I will now mute people when they join until they prove they're not a bot.\nThey will not complete the captcha they get kicked"
+            )
+            return (
+                f"<b>{html.escape(chat.title)}:</b>\n"
+                f"#WELCOME_MUTE\n"
+                f"<b>• Admin:</b> {mention_html(user.id, user.first_name)}\n"
+                f"Has toggled welcome mute to <b>CAPTCHA</b>."
+            )
         else:
             msg.reply_text(
                 "Please enter <code>off</code>/<code>no</code>/<code>soft</code>/<code>strong</code>!",
