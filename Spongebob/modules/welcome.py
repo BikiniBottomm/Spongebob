@@ -36,6 +36,7 @@ from telegram.ext import (
     run_async,
 )
 from telegram.utils.helpers import escape_markdown, mention_html, mention_markdown
+from multicolorcaptcha import CaptchaGenerator
 
 VALID_WELCOME_FORMATTERS = [
     "first",
@@ -60,6 +61,7 @@ ENUM_FUNC_MAP = {
 }
 
 VERIFIED_USER_WAITLIST = {}
+CAPTCHA_ANS_DICT = {}
 
 
 # do not async
@@ -373,6 +375,89 @@ def new_member(update: Update, context: CallbackContext):
                                 message.message_id),
                         120,
                         name="welcomemute",
+                    )
+                if welc_mutes == "captcha":
+                    btn = []
+                    # Captcha image size number (2 -> 640x360)
+                    CAPCTHA_SIZE_NUM = 2
+                    # Create Captcha Generator object of specified size
+                    generator = CaptchaGenerator(CAPCTHA_SIZE_NUM)
+
+                    # Generate a captcha image
+                    captcha = generator.gen_captcha_image(difficult_level=3)
+                    # Get information
+                    image = captcha["image"]
+                    characters = captcha["characters"]
+                    #print(characters)
+                    fileobj = BytesIO()
+                    fileobj.name=f'captcha_{new_mem.id}.png'
+                    image.save(fp=fileobj)
+                    fileobj.seek(0)
+                    CAPTCHA_ANS_DICT[(chat.id, new_mem.id)] = int(characters)
+                    welcome_bool = False
+                    if not media_wel:
+                        VERIFIED_USER_WAITLIST.update(
+                            {
+                                (chat.id, new_mem.id): {
+                                    "should_welc": should_welc,
+                                    "media_wel": False,
+                                    "status": False,
+                                    "update": update,
+                                    "res": res,
+                                    "keyboard": keyboard,
+                                    "backup_message": backup_message,
+                                    "captcha_correct": characters,
+                                }
+                            }
+                        )
+                    else:
+                        VERIFIED_USER_WAITLIST.update(
+                            {
+                                (chat.id, new_mem.id): {
+                                    "should_welc": should_welc,
+                                    "chat_id": chat.id,
+                                    "status": False,
+                                    "media_wel": True,
+                                    "cust_content": cust_content,
+                                    "welc_type": welc_type,
+                                    "res": res,
+                                    "keyboard": keyboard,
+                                    "captcha_correct": characters,
+                                }
+                            }
+                        )
+
+                    nums = [random.randint(1000, 9999) for _ in range(7)]
+                    nums.append(characters)
+                    random.shuffle(nums)
+                    to_append = []
+                    #print(nums)
+                    for a in nums:
+                        to_append.append(InlineKeyboardButton(text=str(a), callback_data=f"user_captchajoin_({chat.id},{new_mem.id})_({a})"))
+                        if len(to_append) > 2:
+                            btn.append(to_append)
+                            to_append = []
+                    if to_append:
+                        btn.append(to_append)
+
+                    message = msg.reply_photo(fileobj, caption=f'Welcome [{escape_markdown(new_mem.first_name)}](tg://user?id={user.id}). Click the correct button to get unmuted!',
+                                    reply_markup=InlineKeyboardMarkup(btn),
+                                    parse_mode=ParseMode.MARKDOWN,
+                                    reply_to_message_id=reply,
+                                )
+                    bot.restrict_chat_member(
+                        chat.id,
+                        new_mem.id,
+                        permissions=ChatPermissions(
+                            can_send_messages=False,
+                            can_invite_users=False,
+                            can_pin_messages=False,
+                            can_send_polls=False,
+                            can_change_info=False,
+                            can_send_media_messages=False,
+                            can_send_other_messages=False,
+                            can_add_web_page_previews=False,
+                        ),
                     )
 
         if welcome_bool:
