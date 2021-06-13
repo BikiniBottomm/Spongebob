@@ -3,6 +3,7 @@ import random
 import re
 import time
 from functools import partial
+from io import BytesIO
 
 import Spongebob.modules.sql.welcome_sql as sql
 from Spongebob import (DEV_USERS, LOGGER, OWNER_ID, DRAGONS, DEMONS, TIGERS,
