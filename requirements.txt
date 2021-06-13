@@ -2,6 +2,7 @@ future
 emoji
 lxml
 countryinfo
+multicolorcaptcha
 emoji-country-flag
 beautifulsoup4
 requests
