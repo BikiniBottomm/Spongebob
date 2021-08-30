@@ -60,3 +60,4 @@ nltk
 youtube_search
 youtube_search_python
 humanize
+gpytranslate
