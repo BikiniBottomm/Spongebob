@@ -503,6 +503,7 @@ __help__ = """
 •  /getsticker: reply to a sticker to me to upload its raw PNG file.
 •  /steal: reply to a sticker to add it to your pack.
 • /stickers: Find stickers for given term on combot sticker catalogue
+• /stickers: Delete A Pack Stiker
 """
 
 __mod_name__ = "Stickers"
