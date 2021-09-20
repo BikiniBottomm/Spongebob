@@ -1,4 +1,5 @@
 from gpytranslate import SyncTranslator
+from telegram import Update
 from telegram.ext import CallbackContext, run_async
 
 from Spongebob import dispatcher
