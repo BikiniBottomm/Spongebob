@@ -21,7 +21,7 @@ def translate(update: Update, context: CallbackContext):
         try:
             tekstr = trl(text, targetlang=target)
         except ValueError as err:
-            message.reply_text(f"Error: `{str(err)}`", parse_mode=ParseMode.MARKDOWN)
+            message.reply_text(f"Error: `{str(err)}`", parse_mode="markdown")
             return
     else:
         if len(message.text.split()) <= 2:
@@ -33,10 +33,10 @@ def translate(update: Update, context: CallbackContext):
         try:
             tekstr = trl(text, targetlang=target)
         except ValueError as err:
-            message.reply_text("Error: `{}`".format(str(err)), parse_mode=ParseMode.MARKDOWN)
+            message.reply_text("Error: `{}`".format(str(err)), parse_mode="markdown")
             return
 
-    message.reply_text(f"*Translated from {detectlang}:*\n```{tekstr.text}```", parse_mode=ParseMode.MARKDOWN)
+    message.reply_text(f"*Translated from {detectlang}:*\n```{tekstr.text}```", parse_mode="markdown")
 
 
 __help__ = """
