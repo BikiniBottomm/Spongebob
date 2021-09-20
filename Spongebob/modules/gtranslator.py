@@ -1,12 +1,10 @@
 from gpytranslate import SyncTranslator
 from telegram import Update
-from telegram.ext import CallbackContext, run_async
+from telegram.ext import CallbackContext
 
 from Spongebob import dispatcher
 from Spongebob.modules.disable import DisableAbleCommandHandler
 
-
-@run_async
 def translate(update: Update, context: CallbackContext):
     message = update.effective_message
     trl = SyncTranslator()
