@@ -5,7 +5,7 @@
 ## Spongebob 
 
 <p align="center">
-- x -|│  “	Let's Play With Spongebob!. ”  │| - x -
+- x -|│  “	Let's Play With Spongebob. ”  │| - x -
 </p>
 
 <p align="center">
